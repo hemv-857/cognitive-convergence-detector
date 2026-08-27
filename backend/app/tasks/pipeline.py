@@ -4,16 +4,15 @@ import logging
 from datetime import datetime
 
 import pandas as pd
-from sqlalchemy.orm import Session
 
+from app.alerts.router import route_alert_sync
 from app.config import settings
 from app.database import SessionLocal
-from app.models import Signal, CorrelationMatrix, Baseline, Alert
 from app.ingestion.market_data import fetch_manager_signals
-from app.stats.normalizer import normalize_signals
-from app.stats.correlation import compute_rolling_correlations, compute_baseline
+from app.models import Alert, Baseline, CorrelationMatrix, Signal
 from app.stats.convergence import detect_convergence
-from app.alerts.router import route_alert_sync
+from app.stats.correlation import compute_baseline, compute_rolling_correlations
+from app.stats.normalizer import normalize_signals
 
 logger = logging.getLogger(__name__)
 

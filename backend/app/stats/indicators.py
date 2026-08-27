@@ -1,7 +1,7 @@
-"""Technical indicators: SMA, EMA, Bollinger, RSI, MACD, Stochastic, ADX, Ichimoku, Williams %R, CCI, ROC, Keltner, Sortino, VaR."""
+"""Technical indicators: SMA, EMA, Bollinger, RSI, MACD, Stochastic, ADX,
+Ichimoku, Williams %R, CCI, ROC, Keltner, Sortino, VaR."""
 
 import logging
-from typing import Dict, List
 
 import numpy as np
 import pandas as pd
@@ -67,7 +67,9 @@ def ichimoku(series: pd.Series, tenkan: int = 9, kijun: int = 26, senkou_b: int 
     tenkan_sen = (series.rolling(tenkan, min_periods=1).max() + series.rolling(tenkan, min_periods=1).min()) / 2
     kijun_sen = (series.rolling(kijun, min_periods=1).max() + series.rolling(kijun, min_periods=1).min()) / 2
     senkou_a = ((tenkan_sen + kijun_sen) / 2).shift(kijun)
-    senkou_b_line = ((series.rolling(senkou_b, min_periods=1).max() + series.rolling(senkou_b, min_periods=1).min()) / 2).shift(kijun)
+    sb_max = series.rolling(senkou_b, min_periods=1).max()
+    sb_min = series.rolling(senkou_b, min_periods=1).min()
+    senkou_b_line = ((sb_max + sb_min) / 2).shift(kijun)
     chikou = series.shift(-kijun)
     return tenkan_sen, kijun_sen, senkou_a, senkou_b_line, chikou
 
@@ -133,7 +135,7 @@ def value_at_risk(series: pd.Series, window: int = 20, confidence: float = 0.95)
     return returns.rolling(window, min_periods=1).quantile(1 - confidence)
 
 
-def compute_indicators(values: pd.Series) -> Dict[str, list]:
+def compute_indicators(values: pd.Series) -> dict[str, list]:
     """Compute all indicators on a signal value series."""
     v = values.astype(float)
 
@@ -198,7 +200,7 @@ def compute_indicators_for_manager(
     signals_df: pd.DataFrame,
     manager_id: str,
     signal_id: str,
-) -> List[Dict]:
+) -> list[dict]:
     """Compute indicators for a specific manager+signal, return as time series."""
     subset = signals_df[
         (signals_df["manager_id"] == manager_id) & (signals_df["signal_id"] == signal_id)
@@ -209,7 +211,10 @@ def compute_indicators_for_manager(
 
     values = subset["value"].reset_index(drop=True)
     dates = subset["date"].reset_index(drop=True)
-    z_scores = subset["z_score"].reset_index(drop=True) if "z_score" in subset.columns else pd.Series([None] * len(subset))
+    if "z_score" in subset.columns:
+        z_scores = subset["z_score"].reset_index(drop=True)
+    else:
+        z_scores = pd.Series([None] * len(subset))
 
     indicators = compute_indicators(values)
 

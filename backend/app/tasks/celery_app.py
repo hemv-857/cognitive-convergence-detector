@@ -1,7 +1,6 @@
 """Celery tasks for async pipeline processing."""
 
 import logging
-from datetime import datetime
 
 from celery import Celery
 

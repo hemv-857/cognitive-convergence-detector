@@ -1,7 +1,6 @@
 """Detect convergence events based on correlation z-scores vs historical baseline."""
 
 import logging
-from typing import Dict, List, Tuple
 
 import numpy as np
 
@@ -19,12 +18,12 @@ def _grade_severity(z_score: float, threshold: float) -> str:
 
 
 def detect_convergence(
-    correlations_today: Dict[Tuple[str, str, str], float],
-    baselines: Dict[Tuple[str, str, str], Tuple[float, float]],
+    correlations_today: dict[tuple[str, str, str], float],
+    baselines: dict[tuple[str, str, str], tuple[float, float]],
     level1_threshold: float = 1.5,
     level2_pairs_pct: float = 0.30,
     level3_percentile: float = 95.0,
-) -> List[Dict]:
+) -> list[dict]:
     """Identify convergence events.
 
     Returns list of alert dicts with keys:
@@ -53,8 +52,8 @@ def detect_convergence(
                 "correlation": corr_today,
                 "z_score": z_score,
                 "message": (
-                    f"{'CRITICAL' if severity == 'critical' else 'HIGH' if severity == 'high' else 'Elevated'} convergence: "
-                    f"{m_a} & {m_b} {ac} correlation "
+                    f"{'CRITICAL' if severity == 'critical' else 'HIGH' if severity == 'high' else 'Elevated'} "
+                    f"convergence: {m_a} & {m_b} {ac} correlation "
                     f"{corr_today:.3f} ({z_score:+.1f}σ from baseline {baseline_mean:.3f})"
                 ),
             }
@@ -62,7 +61,7 @@ def detect_convergence(
             alerts.append(alert)
 
     # Level 2: >30% of pairs in asset class exceed threshold
-    asset_classes = set(a["asset_class"] for a in pair_alerts)
+    asset_classes = {a["asset_class"] for a in pair_alerts}
     for ac in asset_classes:
         ac_alerts = [a for a in pair_alerts if a["asset_class"] == ac]
         total_pairs = sum(1 for k in correlations_today if k[2] == ac)

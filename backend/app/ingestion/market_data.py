@@ -3,14 +3,13 @@
 import logging
 import time
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
 
 import numpy as np
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-MANAGER_TICKERS: Dict[str, Dict[str, str]] = {
+MANAGER_TICKERS: dict[str, dict[str, str]] = {
     "blackrock": {"equities": "SPY", "fixed_income": "BND", "commodities": "GLD"},
     "citadel": {"equities": "QQQ", "fixed_income": "TLT", "commodities": "USO"},
     "point72": {"equities": "IVV", "fixed_income": "AGG", "commodities": "SLV"},
@@ -76,7 +75,7 @@ def generate_demo_signals(lookback_days: int = 365) -> pd.DataFrame:
     return df
 
 
-def _download_close(ticker: str, start: str, end: str, retries: int = 2) -> Optional[pd.Series]:
+def _download_close(ticker: str, start: str, end: str, retries: int = 2) -> pd.Series | None:
     """Download close prices for a ticker with retry and backup ticker fallback."""
     try:
         import yfinance as yf
@@ -104,7 +103,7 @@ def _download_close(ticker: str, start: str, end: str, retries: int = 2) -> Opti
 
 
 def fetch_manager_signals(
-    managers: Optional[List[str]] = None,
+    managers: list[str] | None = None,
     lookback_days: int = 365,
 ) -> pd.DataFrame:
     """Fetch daily price data for all managers and compute signals.

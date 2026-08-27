@@ -9,21 +9,22 @@ import threading
 import time
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
-from typing import Optional, List
 
-from fastapi import FastAPI, Depends, Query
+from fastapi import Depends, FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
 from sqlalchemy import desc
+from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.database import get_db, engine, Base
-from app.models import Signal, CorrelationMatrix, Baseline, Alert
+from app.database import Base, engine, get_db
+from app.models import Alert, Baseline, CorrelationMatrix, Signal
 from app.schemas import (
-    SignalResponse, CorrelationResponse, AlertResponse,
-    ConvergenceSnapshot, BaselineResponse,
+    AlertResponse,
+    BaselineResponse,
+    ConvergenceSnapshot,
+    CorrelationResponse,
 )
 
 logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL))
@@ -138,9 +139,9 @@ def get_current_convergence(
     )
 
 
-@app.get("/api/v1/alerts/recent", response_model=List[AlertResponse])
+@app.get("/api/v1/alerts/recent", response_model=list[AlertResponse])
 def get_recent_alerts(
-    severity: Optional[str] = Query(None, description="Filter by severity"),
+    severity: str | None = Query(None, description="Filter by severity"),
     limit: int = Query(100, ge=1, le=1000),
     db: Session = Depends(get_db),
 ):
@@ -165,7 +166,7 @@ def acknowledge_alert(alert_id: int, db: Session = Depends(get_db)):
 @app.get("/api/v1/correlations/matrix")
 def get_correlation_matrix(
     asset_class: str = Query("equities"),
-    date: Optional[str] = Query(None, description="YYYY-MM-DD, defaults to latest"),
+    date: str | None = Query(None, description="YYYY-MM-DD, defaults to latest"),
     db: Session = Depends(get_db),
 ):
     """Correlation pairs as a flat array for frontend consumption."""
@@ -199,9 +200,9 @@ def get_correlation_matrix(
     ]
 
 
-@app.get("/api/v1/baselines", response_model=List[BaselineResponse])
+@app.get("/api/v1/baselines", response_model=list[BaselineResponse])
 def get_baselines(
-    asset_class: Optional[str] = Query(None),
+    asset_class: str | None = Query(None),
     db: Session = Depends(get_db),
 ):
     """Historical baseline correlations."""
@@ -213,8 +214,8 @@ def get_baselines(
 
 @app.get("/api/v1/signals/latest")
 def get_latest_signals(
-    manager_id: Optional[str] = Query(None),
-    signal_id: Optional[str] = Query(None),
+    manager_id: str | None = Query(None),
+    signal_id: str | None = Query(None),
     limit: int = Query(100, ge=1, le=1000),
     db: Session = Depends(get_db),
 ):
@@ -303,8 +304,9 @@ def get_indicators(
     db: Session = Depends(get_db),
 ):
     """Technical indicators for a manager+signal time series."""
-    from app.stats.indicators import compute_indicators_for_manager
     import pandas as pd
+
+    from app.stats.indicators import compute_indicators_for_manager
 
     cutoff = datetime.utcnow() - timedelta(days=days)
     signals = (
@@ -337,7 +339,6 @@ def get_correlation_regime(
 ):
     """Correlation regime detection: high/low/normal based on historical percentiles."""
     import pandas as pd
-    import numpy as np
 
     cutoff = datetime.utcnow() - timedelta(days=days)
     rows = (
@@ -392,12 +393,13 @@ def get_correlation_regime(
 @app.get("/api/v1/stats/summary")
 def get_stats_summary(db: Session = Depends(get_db)):
     """System-wide statistics."""
-    from sqlalchemy import func, distinct
+    from sqlalchemy import distinct, func
 
     total_signals = db.query(func.count(Signal.id)).scalar() if hasattr(Signal, 'id') else db.query(Signal).count()
     total_alerts = db.query(Alert).count()
     total_managers = db.query(func.count(distinct(Signal.manager_id))).scalar()
-    total_pairs = db.query(CorrelationMatrix).filter(CorrelationMatrix.time >= datetime.utcnow() - timedelta(hours=24)).count()
+    cutoff = datetime.utcnow() - timedelta(hours=24)
+    total_pairs = db.query(CorrelationMatrix).filter(CorrelationMatrix.time >= cutoff).count()
 
     critical = db.query(Alert).filter(Alert.severity == "critical").count()
     high = db.query(Alert).filter(Alert.severity == "high").count()
@@ -434,7 +436,7 @@ def list_asset_classes(db: Session = Depends(get_db)):
 
 @app.get("/api/v1/export/alerts")
 def export_alerts(
-    severity: Optional[str] = Query(None),
+    severity: str | None = Query(None),
     fmt: str = Query("csv", regex="^(csv|json)$"),
     db: Session = Depends(get_db),
 ):
@@ -449,9 +451,13 @@ def export_alerts(
 
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow(["id", "created_at", "alert_type", "severity", "manager_a", "manager_b", "asset_class", "correlation", "z_score", "message"])
+    headers = ["id", "created_at", "alert_type", "severity", "manager_a",
+               "manager_b", "asset_class", "correlation", "z_score", "message"]
+    writer.writerow(headers)
     for a in alerts:
-        writer.writerow([a.id, a.created_at, a.alert_type, a.severity, a.manager_a, a.manager_b, a.asset_class, a.correlation, a.z_score, a.message])
+        writer.writerow([a.id, a.created_at, a.alert_type, a.severity,
+                         a.manager_a, a.manager_b, a.asset_class,
+                         a.correlation, a.z_score, a.message])
     output.seek(0)
     return StreamingResponse(
         iter([output.getvalue()]),
@@ -486,20 +492,22 @@ def export_correlations(
     writer = csv.writer(output)
     writer.writerow(["date", "manager_a", "manager_b", "correlation", "p_value", "n_obs"])
     for r in rows:
-        writer.writerow([r.time.isoformat(), r.manager_a, r.manager_b, r.correlation, r.p_value, r.n_obs])
+        writer.writerow([r.time.isoformat(), r.manager_a, r.manager_b,
+                         r.correlation, r.p_value, r.n_obs])
     output.seek(0)
+    filename = f"correlations_{asset_class}_{datetime.utcnow().strftime('%Y%m%d')}.csv"
     return StreamingResponse(
         iter([output.getvalue()]),
         media_type="text/csv",
-        headers={"Content-Disposition": f"attachment; filename=correlations_{asset_class}_{datetime.utcnow().strftime('%Y%m%d')}.csv"},
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
     )
 
 
 class UpdateSettings(BaseModel):
-    level1_threshold: Optional[float] = None
-    level2_pairs_pct: Optional[float] = None
-    level3_percentile: Optional[float] = None
-    correlation_window: Optional[int] = None
+    level1_threshold: float | None = None
+    level2_pairs_pct: float | None = None
+    level3_percentile: float | None = None
+    correlation_window: int | None = None
 
 
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "..", "settings.json")
@@ -542,7 +550,7 @@ def update_settings(body: UpdateSettings):
 @app.get("/api/v1/health/detailed")
 def detailed_health(db: Session = Depends(get_db)):
     """System health check with DB stats."""
-    from sqlalchemy import func, distinct
+    from sqlalchemy import distinct, func
     start = time.time()
 
     total_signals = db.query(Signal).count()
@@ -602,7 +610,7 @@ def trigger_pipeline():
 @app.get("/api/v1/stats/managers")
 def per_manager_stats(db: Session = Depends(get_db)):
     """Per-manager signal statistics."""
-    from sqlalchemy import func, distinct
+    from sqlalchemy import distinct
     managers = [m[0] for m in db.query(distinct(Signal.manager_id)).all()]
     result = []
     for m in managers:

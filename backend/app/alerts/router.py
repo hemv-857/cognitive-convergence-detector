@@ -3,7 +3,6 @@
 import logging
 import smtplib
 from email.mime.text import MIMEText
-from typing import Dict
 
 import requests
 
@@ -12,7 +11,7 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 
 
-def send_discord_alert(alert: Dict) -> bool:
+def send_discord_alert(alert: dict) -> bool:
     """Send alert to Discord via webhook (free)."""
     if not settings.DISCORD_WEBHOOK_URL:
         return False
@@ -62,7 +61,7 @@ def send_discord_alert(alert: Dict) -> bool:
         return False
 
 
-def send_email_alert(alert: Dict) -> bool:
+def send_email_alert(alert: dict) -> bool:
     """Send alert via email (free, uses smtplib)."""
     if not settings.SMTP_USER or not settings.ALERT_EMAIL_TO:
         return False
@@ -90,7 +89,7 @@ def send_email_alert(alert: Dict) -> bool:
         return False
 
 
-def route_alert_sync(alert: Dict):
+def route_alert_sync(alert: dict):
     """Synchronous alert routing."""
     send_discord_alert(alert)
     send_email_alert(alert)

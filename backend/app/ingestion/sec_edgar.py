@@ -1,7 +1,7 @@
 """Fetch SEC 13-F filings (free public data) for validation."""
 
 import logging
-from typing import List, Dict
+
 import httpx
 
 logger = logging.getLogger(__name__)
@@ -10,7 +10,7 @@ EDGAR_BASE = "https://efts.sec.gov/LATEST"
 HEADERS = {"User-Agent": "ConvergenceDetector research@example.com"}
 
 
-async def fetch_recent_13f_filings(max_results: int = 50) -> List[Dict]:
+async def fetch_recent_13f_filings(max_results: int = 50) -> list[dict]:
     """Fetch recent 13-F filings from SEC EDGAR."""
     url = f"{EDGAR_BASE}/search-index?q=%2213F%22&dateRange=custom&startdt=2024-01-01&forms=13F-HR"
     try:

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List
+
 from pydantic import BaseModel
 
 
@@ -8,7 +8,7 @@ class SignalResponse(BaseModel):
     signal_id: str
     date: datetime
     value: float
-    z_score: Optional[float] = None
+    z_score: float | None = None
 
 
 class CorrelationResponse(BaseModel):
@@ -16,7 +16,7 @@ class CorrelationResponse(BaseModel):
     manager_b: str
     asset_class: str
     correlation: float
-    p_value: Optional[float] = None
+    p_value: float | None = None
     date: datetime
 
     class Config:
@@ -28,12 +28,12 @@ class AlertResponse(BaseModel):
     created_at: datetime
     alert_type: str
     severity: str
-    manager_a: Optional[str] = None
-    manager_b: Optional[str] = None
-    asset_class: Optional[str] = None
-    correlation: Optional[float] = None
-    z_score: Optional[float] = None
-    message: Optional[str] = None
+    manager_a: str | None = None
+    manager_b: str | None = None
+    asset_class: str | None = None
+    correlation: float | None = None
+    z_score: float | None = None
+    message: str | None = None
     acknowledged: int = 0
 
     class Config:
@@ -44,8 +44,8 @@ class ConvergenceSnapshot(BaseModel):
     date: datetime
     asset_class: str
     severity_index: float
-    pair_correlations: List[CorrelationResponse]
-    alerts_today: List[AlertResponse]
+    pair_correlations: list[CorrelationResponse]
+    alerts_today: list[AlertResponse]
 
 
 class BaselineResponse(BaseModel):

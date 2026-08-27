@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import (
-    Column, String, Float, Integer, DateTime, Text
-)
+from sqlalchemy import Column, DateTime, Float, Integer, String, Text
+
 from app.database import Base
 
 

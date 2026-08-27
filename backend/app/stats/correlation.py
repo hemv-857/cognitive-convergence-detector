@@ -1,7 +1,6 @@
 """Compute rolling Pearson and Spearman correlations between manager pairs."""
 
 import logging
-from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -70,7 +69,7 @@ def compute_rolling_correlations(
 def compute_baseline(
     signals_df: pd.DataFrame,
     lookback: int = 252,
-) -> Dict[Tuple[str, str, str], Tuple[float, float]]:
+) -> dict[tuple[str, str, str], tuple[float, float]]:
     """Compute historical baseline (mean, std) for each manager pair + asset class.
 
     Returns: {(manager_a, manager_b, asset_class): (mean, std)}
