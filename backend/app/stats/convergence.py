@@ -68,14 +68,16 @@ def detect_convergence(
         if total_pairs > 0 and len(ac_alerts) / total_pairs > level2_pairs_pct:
             pct = len(ac_alerts) / total_pairs
             severity = "critical" if pct > 0.5 else "high"
+            corr_vals: list[float] = [float(a["correlation"]) for a in ac_alerts]
+            z_vals: list[float] = [float(a["z_score"]) for a in ac_alerts]
             alerts.append({
                 "type": "class_convergence",
                 "severity": severity,
                 "manager_a": None,
                 "manager_b": None,
                 "asset_class": ac,
-                "correlation": float(np.mean([a["correlation"] for a in ac_alerts])),
-                "z_score": float(np.mean([a["z_score"] for a in ac_alerts])),
+                "correlation": float(np.mean(corr_vals)),
+                "z_score": float(np.mean(z_vals)),
                 "message": (
                     f"{'CRITICAL' if severity == 'critical' else 'HIGH'} convergence in {ac}: "
                     f"{len(ac_alerts)}/{total_pairs} pairs above threshold ({pct:.0%})"
@@ -83,17 +85,19 @@ def detect_convergence(
             })
 
     # Level 3: system-wide convergence
-    all_z_scores = [a["z_score"] for a in pair_alerts]
+    all_z_scores = [float(a["z_score"]) for a in pair_alerts]
     if all_z_scores:
-        p95 = np.percentile(np.abs(all_z_scores), level3_percentile) if len(all_z_scores) > 1 else abs(all_z_scores[0])
-        if np.mean(np.abs(all_z_scores)) > p95 * 0.9:
+        abs_z = np.abs(all_z_scores)
+        p95 = np.percentile(abs_z, level3_percentile) if len(all_z_scores) > 1 else abs(all_z_scores[0])
+        if np.mean(abs_z) > p95 * 0.9:
+            all_corr: list[float] = [float(a["correlation"]) for a in pair_alerts]
             alerts.append({
                 "type": "system_convergence",
                 "severity": "critical",
                 "manager_a": None,
                 "manager_b": None,
                 "asset_class": "all",
-                "correlation": float(np.mean([a["correlation"] for a in pair_alerts])),
+                "correlation": float(np.mean(all_corr)),
                 "z_score": float(np.mean(all_z_scores)),
                 "message": (
                     f"CRITICAL system-wide convergence: avg z-score "

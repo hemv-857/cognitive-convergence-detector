@@ -124,12 +124,12 @@ def get_current_convergence(
         severity_index=round(severity_index, 1),
         pair_correlations=[
             CorrelationResponse(
-                manager_a=c.manager_a,
-                manager_b=c.manager_b,
-                asset_class=c.asset_class,
-                correlation=c.correlation,
-                p_value=c.p_value,
-                date=c.time,
+                manager_a=c.manager_a,  # type: ignore[arg-type]
+                manager_b=c.manager_b,  # type: ignore[arg-type]
+                asset_class=c.asset_class,  # type: ignore[arg-type]
+                correlation=c.correlation,  # type: ignore[arg-type]
+                p_value=c.p_value,  # type: ignore[arg-type]
+                date=c.time,  # type: ignore[arg-type]
             )
             for c in correlations
         ],
@@ -158,7 +158,7 @@ def acknowledge_alert(alert_id: int, db: Session = Depends(get_db)):
     alert = db.query(Alert).filter(Alert.id == alert_id).first()
     if not alert:
         return {"error": "Alert not found"}
-    alert.acknowledged = 1
+    alert.acknowledged = 1  # type: ignore[assignment]
     db.commit()
     return {"status": "acknowledged", "alert_id": alert_id}
 
@@ -619,13 +619,13 @@ def per_manager_stats(db: Session = Depends(get_db)):
             continue
         vals = [s.value for s in signals]
         avg = sum(vals) / len(vals)
-        variance = sum((v - avg) ** 2 for v in vals) / len(vals)
+        variance = sum((v - avg) ** 2 for v in vals) / len(vals)  # type: ignore[operator]
         outliers = sum(1 for s in signals if s.z_score is not None and abs(s.z_score) > 2)
         result.append({
             "manager_id": m,
             "count": len(signals),
             "avg": round(avg, 3),
-            "std": round(variance ** 0.5, 3),
+            "std": round(variance ** 0.5, 3),  # type: ignore[operator]
             "outliers": outliers,
             "last_signal": signals[-1].time.isoformat() if signals else None,
         })
