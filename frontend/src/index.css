@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-0: #050508;
+    --bg-1: #0a0a10;
+    --bg-2: #0f0f18;
+    --bg-3: #161622;
+    --bg-4: #1e1e2e;
+    --border: #1a1a2a;
+    --border-h: #252538;
+    --text-1: #e8e8f0;
+    --text-2: #8585a0;
+    --text-3: #4a4a60;
+    --accent: #0ea5a5;
+    --accent-h: #14c8c8;
+    --accent-d: #088888;
+    --green: #16a34a;
+    --red: #dc2626;
+    --yellow: #d97706;
+    --blue: #2563eb;
+    --cyan: #0891b2;
+    --orange: #ea580c;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg-0); color: var(--text-1); font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-h); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+}
+
+@layer components {
+  .card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; }
+  .card-hover { transition: border-color 0.12s; }
+  .card-hover:hover { border-color: var(--border-h); }
+  .mono { font-family: 'JetBrains Mono', 'SF Mono', monospace; }
+  .pill { display: inline-flex; align-items: center; gap: 3px; padding: 1px 7px; border-radius: 9999px; font-size: 10px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; }
+  .pill-green { background: rgba(22,163,74,0.12); color: #4ade80; }
+  .pill-red { background: rgba(220,38,38,0.12); color: #f87171; }
+  .pill-yellow { background: rgba(217,119,6,0.12); color: #fbbf24; }
+  .pill-blue { background: rgba(37,99,235,0.12); color: #60a5fa; }
+  .pill-cyan { background: rgba(8,145,178,0.12); color: #22d3ee; }
+  .pill-orange { background: rgba(234,88,12,0.12); color: #fb923c; }
+}
+
+.recharts-cartesian-grid line { stroke: var(--border) !important; }
+.recharts-text { fill: var(--text-3) !important; font-size: 10px !important; font-family: 'JetBrains Mono', monospace !important; }
+.recharts-tooltip-wrapper .recharts-default-tooltip { background: var(--bg-3) !important; border: 1px solid var(--border-h) !important; border-radius: 6px !important; font-size: 11px !important; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up { animation: slideUp 0.15s ease-out; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in { animation: fadeIn 0.2s ease-out; }
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spin-slow 3s linear infinite; }
+
+/* Custom scrollbar for data tables */
+.data-table-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.data-table-scroll::-webkit-scrollbar-track { background: transparent; }
+.data-table-scroll::-webkit-scrollbar-thumb { background: var(--border-h); border-radius: 3px; }
+
+/* Focus ring utility */
+.focus-ring:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Smooth transitions for interactive elements */
+button, a, input, select { transition: all 0.15s ease-out; }
+
+/* Selection color */
+::selection { background: rgba(14, 165, 165, 0.3); color: #e8e8f0; }
+
+/* Range slider styling */
+input[type="range"] { -webkit-appearance: none; background: transparent; }
+input[type="range"]::-webkit-slider-track { height: 6px; background: var(--bg-3); border-radius: 3px; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); margin-top: -4px; cursor: pointer; border: 2px solid var(--bg-1); }
+input[type="range"]::-moz-range-track { height: 6px; background: var(--bg-3); border-radius: 3px; border: none; }
+input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 2px solid var(--bg-1); }
+
+/* Table row hover */
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Smooth page transitions */
+main > * { animation: fadeIn 0.12s ease-out; }
