@@ -646,7 +646,7 @@ def correlation_summary(
     vals = sorted([r.correlation for r in rows])
     n = len(vals)
     avg = sum(vals) / n
-    variance = sum((v - avg) ** 2 for v in vals) / n
+    variance = sum((v - avg) ** 2 for v in vals) / n  # type: ignore[operator]
     median = vals[n // 2] if n % 2 else (vals[n // 2 - 1] + vals[n // 2]) / 2
     high = sum(1 for v in vals if v > 0.6)
     medium = sum(1 for v in vals if 0.3 < v <= 0.6)

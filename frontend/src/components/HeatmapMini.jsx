@@ -69,7 +69,7 @@ export default function HeatmapMini({ correlations }) {
         </table>
       </div>
       <div className="flex items-center justify-center gap-3 pt-1 border-t border-border">
-        {CELL_COLORS.map(({ max, bg, text }, i) => (
+        {CELL_COLORS.map(({ max, bg }, i) => (
           <div key={i} className="flex items-center gap-1">
             <div className="w-3 h-3 rounded-sm" style={{ background: bg }} />
             <span className="text-[8px] text-txt-3">

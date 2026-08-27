@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useData } from "../hooks/useFetch";
 import { api } from "../lib/api";
-import { useFavorites } from "../components/Favorites";
 import ErrorBoundary from "../components/ErrorBoundary";
-import Sparkline from "../components/Sparkline";
 import HeatmapMini from "../components/HeatmapMini";
 import NetworkGraph from "../components/NetworkGraph";
 import AlertTimeline from "../components/AlertTimeline";

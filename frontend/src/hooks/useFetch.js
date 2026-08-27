@@ -39,12 +39,14 @@ export function useData(fetchFn, deps = [], opts = {}) {
     mountedRef.current = true;
     load(false);
     return () => { mountedRef.current = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
   useEffect(() => {
     if (!autoRefreshInterval) return;
     const id = setInterval(() => load(true), autoRefreshInterval * 1000);
     return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoRefreshInterval]);
 
   return { d, loading, error, refreshing, reload: () => load(true) };

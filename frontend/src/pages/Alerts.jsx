@@ -11,7 +11,7 @@ export default function Alerts() {
   const [sortBy, setSortBy] = useState("created_at");
   const [sortDir, setSortDir] = useState("desc");
   const [grouped, setGrouped] = useState(false);
-  const { d: alerts, loading, reloading, reload } = useData(() => api.alerts(null, 200), [filter], { autoRefreshInterval: 15 });
+  const { d: alerts, loading } = useData(() => api.alerts(null, 200), [filter], { autoRefreshInterval: 15 });
   const [acked, setAcked] = useState(new Set());
   const [selected, setSelected] = useState(new Set());
 

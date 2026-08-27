@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useData } from "../hooks/useFetch";
 import { api } from "../lib/api";
 import ErrorBoundary from "../components/ErrorBoundary";
-import { Download, FileText, BarChart3, Database, Calendar } from "lucide-react";
+import { Download, FileText, BarChart3, Database } from "lucide-react";
 
 export default function ExportPage() {
   const [exporting, setExporting] = useState(null);
@@ -10,7 +10,7 @@ export default function ExportPage() {
   const [corrFormat, setCorrFormat] = useState("csv");
   const [corrClass, setCorrClass] = useState("equities");
   const { d: summary } = useData(() => api.summary(), []);
-  const { d: managers } = useData(() => api.managers(), []);
+
   const { d: assetClasses } = useData(() => api.assetClasses(), []);
 
   const handleExport = async (type) => {

@@ -50,7 +50,7 @@ export default function AboutPage() {
           <h2 className="text-[12px] font-medium text-txt-1">Cognitive Convergence Detector</h2>
           <p className="text-[11px] text-txt-3 leading-relaxed">
             Monitors institutional trading signal correlation and detects convergence events.
-            When multiple managers' signals become highly correlated, it may indicate crowded trades
+            When multiple managers&apos; signals become highly correlated, it may indicate crowded trades
             or systemic risk buildup.
           </p>
           <div className="flex items-center gap-2 pt-1">

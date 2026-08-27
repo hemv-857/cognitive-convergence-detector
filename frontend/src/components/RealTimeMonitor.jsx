@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { useData } from "../hooks/useFetch";
 import { api } from "../lib/api";
-import { AreaChart, Gauge, MiniBar } from "./Charts";
-import { TrendingUp, TrendingDown, Minus, Activity, AlertTriangle } from "lucide-react";
+import { MiniBar } from "./Charts";
+import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 function TrendIcon({ value }) {
   if (value > 0.05) return <TrendingUp size={12} className="text-ok" />;
@@ -32,15 +32,13 @@ function PairRow({ pair, onClick }) {
 
 export default function RealTimeMonitor({ onPairClick }) {
   const { d: corrs, loading } = useData(() => api.correlations("equities"), [], { autoRefreshInterval: 30 });
-  const { d: summary } = useData(() => api.summary(), [], { autoRefreshInterval: 60 });
 
-  const { topPairs, bottomPairs, stats } = useMemo(() => {
-    if (!corrs || corrs.length === 0) return { topPairs: [], bottomPairs: [], stats: null };
+  const { topPairs, stats } = useMemo(() => {
+    if (!corrs || corrs.length === 0) return { topPairs: [], stats: null };
     const sorted = [...corrs].sort((a, b) => b.correlation - a.correlation);
     const vals = corrs.map(c => c.correlation);
     return {
       topPairs: sorted.slice(0, 5),
-      bottomPairs: sorted.slice(-5).reverse(),
       stats: {
         avg: vals.reduce((a, b) => a + b, 0) / vals.length,
         max: Math.max(...vals),

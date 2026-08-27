@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useData } from "../hooks/useFetch";
 import { api } from "../lib/api";
 import ErrorBoundary from "../components/ErrorBoundary";
-import { AreaChart, MiniBar } from "../components/Charts";
+import { AreaChart } from "../components/Charts";
 import { BarChart3, ArrowLeftRight } from "lucide-react";
 
 const SIGNALS = ["equities", "fixed_income", "commodities"];

@@ -3,12 +3,12 @@ import { useData } from "../hooks/useFetch";
 import { api } from "../lib/api";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { AreaChart } from "../components/Charts";
-import { TrendingUp, TrendingDown, Minus, Search, ArrowUpDown } from "lucide-react";
+import { Search, ArrowUpDown } from "lucide-react";
 
 const SIGNAL_COLORS = { equities: "#0ea5a5", fixed_income: "#06b6d4", commodities: "#8b5cf6" };
 
 export default function Signals() {
-  const [manager, setManager] = useState("");
+
   const [signal, setSignal] = useState("equities");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("z_score");
@@ -48,9 +48,7 @@ export default function Signals() {
     else { setSortBy(key); setSortDir("desc"); }
   };
 
-  const zColor = (z) => Math.abs(z) > 2 ? "#ef4444" : Math.abs(z) > 1 ? "#eab308" : "#0ea5a5";
   const zPill = (z) => Math.abs(z) > 2 ? "pill-red" : Math.abs(z) > 1 ? "pill-yellow" : "pill-green";
-  const zLabel = (z) => Math.abs(z) > 2 ? "EXTREME" : Math.abs(z) > 1 ? "ELEVATED" : "NORMAL";
 
   return (
     <ErrorBoundary>
@@ -129,7 +127,7 @@ export default function Signals() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((r, i) => (
+                {filtered.map((r) => (
                   <tr key={`${r.manager_id}-${r.signal_id}`}
                     onClick={() => setSelectedManager(r.manager_id)}
                     className="border-b border-border/30 hover:bg-bg-3/30 transition-colors cursor-pointer">

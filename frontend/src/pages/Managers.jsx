@@ -4,7 +4,7 @@ import { api } from "../lib/api";
 import { useFavorites } from "../components/Favorites";
 import ErrorBoundary from "../components/ErrorBoundary";
 import Sparkline from "../components/Sparkline";
-import { AreaChart, MiniBar } from "../components/Charts";
+import { AreaChart } from "../components/Charts";
 import DataTable from "../components/DataTable";
 import { Star, ArrowLeft, Activity, TrendingUp, AlertTriangle } from "lucide-react";
 
@@ -82,7 +82,6 @@ export default function Managers() {
 
 function ManagerDetail({ managerId, onBack, activeSignal, setActiveSignal }) {
   const { d: signalData } = useData(() => api.signalHistory(managerId, activeSignal, 90), [managerId, activeSignal]);
-  const { d: summary } = useData(() => api.summary(), []);
 
   const columns = [
     { key: "date", label: "Date", render: (v) => new Date(v).toLocaleDateString() },

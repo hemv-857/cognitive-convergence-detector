@@ -133,7 +133,7 @@ export default function Trends() {
           ) : (
             <>
               <div className="space-y-0.5 max-h-40 overflow-y-auto pr-1">
-                {sorted.slice(0, 15).map((b, i) => (
+                {sorted.slice(0, 15).map((b) => (
                   <CorrelationBar
                     key={`${b.manager_a}-${b.manager_b}-${b.asset_class}`}
                     value={b.baseline_mean}

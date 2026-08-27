@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useData } from "../hooks/useFetch";
 import { api } from "../lib/api";
 import ErrorBoundary from "../components/ErrorBoundary";

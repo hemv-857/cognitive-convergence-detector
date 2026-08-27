@@ -6,7 +6,6 @@ import { Save, RotateCcw, Play, AlertTriangle, Activity, Info, Zap } from "lucid
 import { useToast } from "../components/Toast";
 
 function ThresholdSlider({ value, onChange, min, max, step, label, desc, color = "#0ea5a5" }) {
-  const pct = ((value - min) / (max - min)) * 100;
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">

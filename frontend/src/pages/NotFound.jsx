@@ -8,7 +8,7 @@ export default function NotFound({ onBack }) {
       </div>
       <h1 className="text-xl font-bold text-txt-1 mb-1">404</h1>
       <p className="text-[12px] text-txt-3 mb-6 text-center max-w-sm">
-        The page you're looking for doesn't exist or has been moved.
+        The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
       <div className="flex items-center gap-2">
         <button onClick={() => onBack("dashboard")}

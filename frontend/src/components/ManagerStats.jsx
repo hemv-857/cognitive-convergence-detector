@@ -22,7 +22,6 @@ export default function ManagerStats() {
       </div>
       <div className="space-y-1">
         {sorted.map(m => {
-          const outlierPct = m.count > 0 ? (m.outliers / m.count) * 100 : 0;
           return (
             <div key={m.manager_id} className="flex items-center gap-2 py-1 px-2 rounded-md hover:bg-bg-3 transition-colors">
               <div className="w-5 h-5 rounded bg-accent/10 flex items-center justify-center text-accent text-[7px] mono font-bold">
