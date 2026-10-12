@@ -1,5 +1,7 @@
 # Cognitive Convergence Detector
 
+<a href="https://github.com/hemv-857/cognitive-convergence-detector/actions/workflows/ci.yml"><img src="https://github.com/hemv-857/cognitive-convergence-detector/actions/workflows/ci.yml/badge.svg" alt="cognitive-convergence-detector CI"></a> <a href="https://github.com/hemv-857/cognitive-convergence-detector/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a> <img src="https://img.shields.io/badge/HTML-E34F26.svg" alt="HTML">
+
 Measures institutional trading signal correlation and detects convergence events using 10 managers across 3 asset classes with 30 live market tickers.
 
 ## Features
