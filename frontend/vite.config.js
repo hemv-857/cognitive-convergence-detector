@@ -18,10 +18,14 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'recharts': ['recharts'],
-          'router': ['react-router-dom'],
+        // vite 8 (rolldown) only accepts the function form; the object form
+        // was dropped. Same three chunks, same packages.
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return 'react-vendor';
+          if (id.includes('node_modules/recharts')) return 'recharts';
+          if (id.includes('node_modules/react-router')) return 'router';
+          return undefined;
         },
       },
     },
