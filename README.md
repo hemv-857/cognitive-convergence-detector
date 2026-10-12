@@ -120,6 +120,10 @@ DISCORD_WEBHOOK_URL=your_webhook_url  # optional
 ALERT_EMAIL=your@email.com            # optional
 ```
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
 MIT
