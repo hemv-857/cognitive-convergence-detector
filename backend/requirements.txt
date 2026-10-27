@@ -5,7 +5,7 @@ sqlalchemy==2.0.35
 psycopg2-binary==2.9.9
 celery[redis]==5.4.0
 redis==5.0.0
-yfinance==0.2.40
+yfinance==1.7.0
 pandas==2.2.0
 numpy==1.26.0
 scipy==1.14.0
